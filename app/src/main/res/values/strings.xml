@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Android Task 2</string>
+
+    <string name="client_id">z46H5SPeMug515gUDTYmi9cX1t1fo4w8OIeLTbNM</string>
+    <string name="auth_url">http://10.0.3.2:8000/o/authorize/?response_type=token</string>
+    <string name="redirect_url">http://10.0.3.2:8000/api/</string>
+    <string name="request_url">http://10.0.3.2:8000/o/hello</string>
+
+    <string name="token_text">Ваш токен:\n</string>
+    <string name="date_text">Истекает через\n</string>
+
+    <string name="wrong_token">Произошла ошибка авторизации. Попробуйте войти снова</string>
+    <string name="auth_button">Войти </string>
+
+    <string name="error_message">Отсутствует подключение к сети, авторизация невозможна</string>
+    <string name="error_button">Выйти</string>
+</resources>
