@@ -82,7 +82,6 @@ public class SplashActivity extends AppCompatActivity {
         protected void onPostExecute(RequestResult requestResult) {
             if (!isCancelled()) {
                 if (requestResult == RequestResult.OK) {
-                    mTokenManager.savePrefs();
                     startShowTokenActivity();
                 } else if (requestResult == RequestResult.WRONG_TOKEN) {
                     startWrongTokenActivity();

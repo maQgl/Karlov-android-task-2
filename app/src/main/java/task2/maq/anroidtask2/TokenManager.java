@@ -1,6 +1,7 @@
 package task2.maq.anroidtask2;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import java.util.Calendar;
 
@@ -27,14 +28,16 @@ public class TokenManager {
     }
 
     public String getExpiresIn() {
-        Calendar calendar = Calendar.getInstance();
-        int curTime = calendar.get(Calendar.SECOND);
-        calendar.setTimeInMillis((expiresAt-curTime)*1000l);
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        int curTime = (int) (Calendar.getInstance().getTimeInMillis()/1000);
+        int diff = expiresAt - curTime;
+        Log.i("app2", curTime + " " + expiresAt + " " + diff);
+        int hours = diff / 3600;
+        diff -= hours * 3600;
         String hoursStr = hours < 10 ? "0" + hours : "" + hours;
-        int minutes = calendar.get(Calendar.MINUTE);
+        int minutes = diff/ 60;
+        diff -= minutes * 60;
         String minutesStr = minutes < 10 ? "0" + minutes : "" + minutes;
-        int seconds = calendar.get(Calendar.SECOND);
+        int seconds = diff;
         String secondsStr = seconds < 10 ? "0" + seconds : "" + seconds;
         return (hoursStr+":"+minutesStr+":"+secondsStr);
     }

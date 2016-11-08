@@ -42,6 +42,7 @@ public class WebActivity extends AppCompatActivity {
     }
 
     private void showConnectionError(){
+        ((MainApp) getApplication()).setConnectionError(false);
         TextView textView = (TextView) findViewById(R.id.connection_error_text);
         textView.setVisibility(View.VISIBLE);
     }
@@ -73,10 +74,11 @@ public class WebActivity extends AppCompatActivity {
             Log.i("app2", url);
             if (url.startsWith(redirectUrl)) {
                 String[] urls = url.split("=");
-                int seconds = Calendar.getInstance().get(Calendar.SECOND);
+                int seconds = (int) (Calendar.getInstance().getTimeInMillis()/1000);
                 int expiresIn = Integer.parseInt(urls[4].split("&")[0]);
                 tokenManager.setToken(urls[1].split("&")[0]);
                 tokenManager.setExpiresAt(seconds+expiresIn);
+                tokenManager.savePrefs();
                 Intent intent = new Intent(WebActivity.this, ShowTokenActivity.class);
                 startActivity(intent);
             }

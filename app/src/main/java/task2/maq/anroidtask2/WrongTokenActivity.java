@@ -25,6 +25,7 @@ public class WrongTokenActivity extends AppCompatActivity {
             public void onClick(View v) {
                 tokenManager.setToken(null);
                 tokenManager.setExpiresAt(0);
+                tokenManager.savePrefs();
                 finish();
             }
         });
