@@ -34,9 +34,6 @@ public class SplashActivity extends AppCompatActivity {
         }
         mRequestUrl = getString(R.string.request_url);
         Log.i("app2", "executeRequestTask");
-        mRequestTask = new RequestTask();
-        mRequestTask.execute(mRequestUrl, mToken);
-
     }
 
     @Override
@@ -45,6 +42,13 @@ public class SplashActivity extends AppCompatActivity {
             mRequestTask.cancel(true);
         }
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRequestTask = new RequestTask();
+        mRequestTask.execute(mRequestUrl, mToken);
     }
 
     private void startShowTokenActivity() {
@@ -84,6 +88,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (requestResult == RequestResult.OK) {
                     startShowTokenActivity();
                 } else if (requestResult == RequestResult.WRONG_TOKEN) {
+                    Log.i("app2", "WrongTokenActivity");
                     startWrongTokenActivity();
                 } else if (requestResult == RequestResult.CONNECTION_ERROR) {
                     ((MainApp)getApplication()).setConnectionError(true);
