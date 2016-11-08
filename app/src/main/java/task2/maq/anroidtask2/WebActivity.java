@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import java.util.Calendar;
 
@@ -22,10 +24,16 @@ public class WebActivity extends AppCompatActivity {
 
     private TokenManager tokenManager;
 
+    private String mToken;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.web_activity);
+
+        tokenManager = ((MainApp) getApplication()).getTokenManager();
+        mToken = tokenManager.getToken();
+
         webView = (WebView) findViewById(R.id.web_view);
         redirectUrl = getString(R.string.redirect_url);
         authUrl = getString(R.string.auth_url);
@@ -33,18 +41,30 @@ public class WebActivity extends AppCompatActivity {
         tokenManager = ((MainApp) getApplication()).getTokenManager();
     }
 
-    private void startConnectionErrActivity() {
-        Intent intent = new Intent(this, ConnectionErrActivity.class);
-        startActivity(intent);
+    private void showConnectionError(){
+        TextView textView = (TextView) findViewById(R.id.connection_error_text);
+        textView.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        webView.setWebViewClient(new OAuthWebClient());
-        webView.loadUrl(authUrl+"&client_id="+clientId);
+        if (((MainApp)getApplication()).isConnectionError()) {
+            showConnectionError();
+        }
+        else if (mToken != null) {
+            startSplashActivity();
+        } else {
+            webView.setWebViewClient(new OAuthWebClient());
+            webView.loadUrl(authUrl+"&client_id="+clientId);
+        }
     }
 
+
+    private void startSplashActivity() {
+        Intent intent = new Intent(this, SplashActivity.class);
+        startActivity(intent);
+    }
 
     private class OAuthWebClient extends WebViewClient {
 
@@ -57,14 +77,15 @@ public class WebActivity extends AppCompatActivity {
                 int expiresIn = Integer.parseInt(urls[4].split("&")[0]);
                 tokenManager.setToken(urls[1].split("&")[0]);
                 tokenManager.setExpiresAt(seconds+expiresIn);
-                finish();
+                Intent intent = new Intent(WebActivity.this, ShowTokenActivity.class);
+                startActivity(intent);
             }
             return super.shouldOverrideUrlLoading(view, url);
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            startConnectionErrActivity();
+            showConnectionError();
             super.onReceivedError(view, errorCode, description, failingUrl);
         }
     }

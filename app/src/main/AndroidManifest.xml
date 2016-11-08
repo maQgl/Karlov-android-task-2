@@ -9,17 +9,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".MainApp">
-        <activity android:name=".MainActivity">
+        <activity android:name=".WebActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".WebActivity"/>
+        <activity android:name=".SplashActivity"/>
         <activity android:name=".ShowTokenActivity"/>
         <activity android:name=".WrongTokenActivity"/>
-        <activity android:name=".ConnectionErrActivity"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

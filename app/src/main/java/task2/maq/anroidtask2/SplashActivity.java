@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private final int statusOk = 200;
 
@@ -29,15 +29,14 @@ public class MainActivity extends AppCompatActivity {
 
         mTokenManager = ((MainApp) getApplication()).getTokenManager();
         mToken = mTokenManager.getToken();
-        mRequestUrl = getString(R.string.request_url);
         if (mToken == null) {
-            Log.i("app2", "startWebActivity");
-            startWebActivity();
-        } else {
-            Log.i("app2", "executeRequestTask");
-            mRequestTask = new RequestTask();
-            mRequestTask.execute(mRequestUrl, mToken);
+            finish();
         }
+        mRequestUrl = getString(R.string.request_url);
+        Log.i("app2", "executeRequestTask");
+        mRequestTask = new RequestTask();
+        mRequestTask.execute(mRequestUrl, mToken);
+
     }
 
     @Override
@@ -48,11 +47,6 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    private void startWebActivity(){
-        Intent intent = new Intent(this, WebActivity.class);
-        startActivity(intent);
-    }
-
     private void startShowTokenActivity() {
         Intent intent = new Intent(this, ShowTokenActivity.class);
         startActivity(intent);
@@ -60,11 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startWrongTokenActivity() {
         Intent intent = new Intent(this, WrongTokenActivity.class);
-        startActivity(intent);
-    }
-
-    private void startConnectionErrActivity() {
-        Intent intent = new Intent(this, ConnectionErrActivity.class);
         startActivity(intent);
     }
 
@@ -98,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
                 } else if (requestResult == RequestResult.WRONG_TOKEN) {
                     startWrongTokenActivity();
                 } else if (requestResult == RequestResult.CONNECTION_ERROR) {
-                    Log.i("app2", "connection error");
-                    startConnectionErrActivity();
+                    ((MainApp)getApplication()).setConnectionError(true);
+                    finish();
                 }
             }
         }
