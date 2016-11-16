@@ -18,8 +18,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private TokenManager mTokenManager;
 
-    private String mToken;
-
     private String mRequestUrl;
 
     @Override
@@ -28,12 +26,27 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mTokenManager = ((MainApp) getApplication()).getTokenManager();
-        mToken = mTokenManager.getToken();
-        if (mToken == null) {
-            finish();
-        }
+
         mRequestUrl = getString(R.string.request_url);
         Log.i("app2", "executeRequestTask");
+    }
+
+    private void startWebActivity() {
+        Intent intent = new Intent(this, WebActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == 2) {
+            mTokenManager.setToken(data.getStringExtra("token"));
+            mTokenManager.setExpiresAt(data.getIntExtra("expiresIn", 0));
+            mTokenManager.savePrefs();
+            startShowTokenActivity();
+        } else if (resultCode == 3) {
+            startConnectionErrorActivity();
+        }
     }
 
     @Override
@@ -47,18 +60,36 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mRequestTask = new RequestTask();
-        mRequestTask.execute(mRequestUrl, mToken);
+        if (mTokenManager.getToken() == null) {
+            startWebActivity();
+        } else {
+            checkToken();
+        }
+    }
+
+    private void checkToken() {
+        if (mRequestTask == null) {
+            mRequestTask = new RequestTask();
+            mRequestTask.execute(mRequestUrl, mTokenManager.getToken());
+        }
     }
 
     private void startShowTokenActivity() {
         Intent intent = new Intent(this, ShowTokenActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    private void startConnectionErrorActivity() {
+        Intent intent = new Intent(this, ConnectionErrorActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     private void startWrongTokenActivity() {
         Intent intent = new Intent(this, WrongTokenActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private class RequestTask extends AsyncTask<String, Void, RequestResult> {
@@ -91,8 +122,7 @@ public class SplashActivity extends AppCompatActivity {
                     Log.i("app2", "WrongTokenActivity");
                     startWrongTokenActivity();
                 } else if (requestResult == RequestResult.CONNECTION_ERROR) {
-                    ((MainApp)getApplication()).setConnectionError(true);
-                    finish();
+                    startConnectionErrorActivity();
                 }
             }
         }
@@ -101,6 +131,6 @@ public class SplashActivity extends AppCompatActivity {
     public enum RequestResult {
         OK,
         WRONG_TOKEN,
-        CONNECTION_ERROR;
+        CONNECTION_ERROR
     }
 }
