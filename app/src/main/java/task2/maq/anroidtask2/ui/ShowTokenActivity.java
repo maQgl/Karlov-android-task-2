@@ -1,9 +1,13 @@
-package task2.maq.anroidtask2;
+package task2.maq.anroidtask2.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import task2.maq.anroidtask2.MainApp;
+import task2.maq.anroidtask2.R;
+import task2.maq.anroidtask2.TokenManager;
 
 public class ShowTokenActivity extends AppCompatActivity {
 

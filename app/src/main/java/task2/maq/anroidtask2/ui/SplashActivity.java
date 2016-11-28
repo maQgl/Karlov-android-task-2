@@ -1,4 +1,4 @@
-package task2.maq.anroidtask2;
+package task2.maq.anroidtask2.ui;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -10,9 +10,15 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import task2.maq.anroidtask2.MainApp;
+import task2.maq.anroidtask2.R;
+import task2.maq.anroidtask2.TokenManager;
+
 public class SplashActivity extends AppCompatActivity {
 
     private final int statusOk = 200;
+
+    private boolean isTokenChecked;
 
     private RequestTask mRequestTask;
 
@@ -39,10 +45,12 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("app2", "SplashScreen onActivityResult " + resultCode);
         if (resultCode == 2) {
             mTokenManager.setToken(data.getStringExtra("token"));
             mTokenManager.setExpiresAt(data.getIntExtra("expiresIn", 0));
             mTokenManager.savePrefs();
+            isTokenChecked = true;
             startShowTokenActivity();
         } else if (resultCode == 3) {
             startConnectionErrorActivity();
@@ -60,9 +68,10 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("app2", "SplashActivity onResume " + this.hashCode());
         if (mTokenManager.getToken() == null) {
             startWebActivity();
-        } else {
+        } else if (!isTokenChecked){
             checkToken();
         }
     }
@@ -75,9 +84,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startShowTokenActivity() {
+        Log.i("app2", "startShowTokenActivity");
         Intent intent = new Intent(this, ShowTokenActivity.class);
         startActivity(intent);
         finish();
+        Log.i("app2", "SplashActivity should be finished already " + this.hashCode());
     }
 
     private void startConnectionErrorActivity() {
@@ -89,7 +100,6 @@ public class SplashActivity extends AppCompatActivity {
     private void startWrongTokenActivity() {
         Intent intent = new Intent(this, WrongTokenActivity.class);
         startActivity(intent);
-        finish();
     }
 
     private class RequestTask extends AsyncTask<String, Void, RequestResult> {
@@ -117,9 +127,10 @@ public class SplashActivity extends AppCompatActivity {
         protected void onPostExecute(RequestResult requestResult) {
             if (!isCancelled()) {
                 if (requestResult == RequestResult.OK) {
+                    isTokenChecked = true;
                     startShowTokenActivity();
                 } else if (requestResult == RequestResult.WRONG_TOKEN) {
-                    Log.i("app2", "WrongTokenActivity");
+                    Log.i("app2", "WrongTokenActivity: " + mTokenManager.getToken());
                     startWrongTokenActivity();
                 } else if (requestResult == RequestResult.CONNECTION_ERROR) {
                     startConnectionErrorActivity();

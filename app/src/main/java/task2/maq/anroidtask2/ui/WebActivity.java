@@ -1,4 +1,4 @@
-package task2.maq.anroidtask2;
+package task2.maq.anroidtask2.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.util.Calendar;
+
+import task2.maq.anroidtask2.R;
 
 public class WebActivity extends AppCompatActivity {
 
