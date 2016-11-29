@@ -13,6 +13,7 @@ import java.net.URL;
 import task2.maq.anroidtask2.MainApp;
 import task2.maq.anroidtask2.R;
 import task2.maq.anroidtask2.TokenManager;
+import task2.maq.anroidtask2.ui.PostActivity.PostsActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -85,7 +86,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startShowTokenActivity() {
         Log.i("app2", "startShowTokenActivity");
-        Intent intent = new Intent(this, ShowTokenActivity.class);
+        Intent intent = new Intent(this, PostsActivity.class);
         startActivity(intent);
         finish();
         Log.i("app2", "SplashActivity should be finished already " + this.hashCode());
