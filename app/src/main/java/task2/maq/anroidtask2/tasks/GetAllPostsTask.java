@@ -22,7 +22,7 @@ public class GetAllPostsTask extends AsyncTask<Void, Void, List<Post>>{
 
     @Override
     protected List<Post> doInBackground(Void... params) {
-        return dataManager.getAllPosts();
+        return dataManager.getPosts();
     }
 
     @Override
@@ -30,7 +30,9 @@ public class GetAllPostsTask extends AsyncTask<Void, Void, List<Post>>{
         super.onPostExecute(posts);
         PostsActivity activity = activityWeakReference.get();
         if (activity != null) {
-            activity.showPosts(posts);
+            activity.setPosts(posts);
+            activity.removeTaskFromCurrents(this);
+            activity.updatePosts();
         }
     }
 }

@@ -1,8 +1,13 @@
 package task2.maq.anroidtask2.ui;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -18,6 +23,8 @@ import task2.maq.anroidtask2.ui.PostActivity.PostsActivity;
 public class SplashActivity extends AppCompatActivity {
 
     private final int statusOk = 200;
+
+    private final int permissionRequestCode = 9999;
 
     private boolean isTokenChecked;
 
@@ -35,7 +42,21 @@ public class SplashActivity extends AppCompatActivity {
         mTokenManager = ((MainApp) getApplication()).getTokenManager();
 
         mRequestUrl = getString(R.string.request_url);
+        checkPermission();
         Log.i("app2", "executeRequestTask");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void manageToken() {
+        if (mTokenManager.getToken() == null) {
+            startWebActivity();
+        } else if (!isTokenChecked){
+            checkToken();
+        }
     }
 
     private void startWebActivity() {
@@ -66,15 +87,28 @@ public class SplashActivity extends AppCompatActivity {
         super.onStop();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i("app2", "SplashActivity onResume " + this.hashCode());
-        if (mTokenManager.getToken() == null) {
-            startWebActivity();
-        } else if (!isTokenChecked){
-            checkToken();
+    private void checkPermission() {
+        if(!isExternalStorageGranted()) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    permissionRequestCode);
+        } else {
+            manageToken();
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        manageToken();
+    }
+
+    private boolean isExternalStorageGranted() {
+        return (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) &&
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED);
     }
 
     private void checkToken() {

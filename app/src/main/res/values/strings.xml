@@ -1,12 +1,14 @@
 <resources>
     <string name="app_name">Android Task 2</string>
 
-    <string name="client_id">zxhmJUnM0tzXqD7F9wYYX3IxwUY5MmRfZWMmusN8</string>
+    <string name="client_id">LYpe48NhNIQE95WHvr7IoiWyf0LUtViRgP7zyVvd</string>
     <string name="auth_url">http://10.0.3.2:8000/o/authorize/?response_type=token</string>
     <string name="redirect_url">http://10.0.3.2:8000/api/</string>
     <string name="request_url">http://10.0.3.2:8000/api/hello</string>
     <string name="host">http://10.0.3.2:8000</string>
     <string name="posts">/api/posts/</string>
+    <string name="users">/api/users/</string>
+    <string name="image">/media/</string>
 
     <string name="token_text">Ваш токен:\n</string>
     <string name="date_text">Истекает через\n</string>
